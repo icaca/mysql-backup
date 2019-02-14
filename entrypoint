@@ -220,3 +220,7 @@ else
     last_run=$(date +"%s")
   done
 fi
+
+#echo logs and delete more file
+sh /dumpafter.sh
+
