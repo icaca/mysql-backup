@@ -195,6 +195,22 @@ else
     # remove lingering file
     /bin/rm ${TMPDIR}/${SOURCE}
 
+    #echo logs and delete more file                                                                                    
+    MAX_BACKUPS=14
+    
+    if [ -n "${MAX_BACKUPS}" ]; then
+        while [ $(ls /db -N1 | wc -l) -gt ${MAX_BACKUPS} ];
+        do
+            BACKUP_TO_BE_DELETED=$(ls /db -N1 | sort | head -n 1)
+            echo "   Backup ${BACKUP_TO_BE_DELETED} is deleted"
+            rm -rf /db/${BACKUP_TO_BE_DELETED}
+        done
+    fi
+    
+    echo "`date '+%Y%m%d %H%M%S'`" >>/db/mysql_backup.log
+    echo "=> Backup done" >>/db/mysql_backup.log
+                                                                                                                       
+
     # wait, unless RUN_ONCE is set
     current_time=$(date +"%s")
     if [ -n "${RUN_ONCE}" ]; then
@@ -220,7 +236,4 @@ else
     last_run=$(date +"%s")
   done
 fi
-
-#echo logs and delete more file
-sh /dumpafter.sh
 
